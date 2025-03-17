@@ -12,7 +12,6 @@ const { execSync } = require('child_process');
 const fs = require('fs');
 const path = require('path');
 const screenshot = require('screenshot-desktop');
-let activeWin;
 const ReversiBot = require('./ReversiBot');
 
 // Создаем директорию для временных файлов
@@ -30,19 +29,9 @@ const bot = new ReversiBot();
  */
 async function captureActiveWindow() {
   try {
-    // Проверяем, загружен ли модуль activeWin
-    if (!activeWin) {
-      const module = await import('active-win');
-      activeWin = module.default;
-    }
-    
-    // Получаем информацию об активном окне
-    const activeWindow = await activeWin();
-    if (!activeWindow) {
-      throw new Error('Не удалось получить информацию об активном окне');
-    }
-
-    console.log(`Активное окно: ${activeWindow.title}`);
+    // Получаем информацию об активном окне с помощью xdotool
+    const activeWindowInfo = execSync('xdotool getactivewindow getwindowname').toString().trim();
+    console.log(`Активное окно: ${activeWindowInfo}`);
     
     // Делаем скриншот всего экрана
     const screenshotPath = path.join(tempDir, `screenshot_${Date.now()}.png`);

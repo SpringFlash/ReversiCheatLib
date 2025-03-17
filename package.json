@@ -6,7 +6,8 @@
   "scripts": {
     "autoplay": "node src/autoplay.js",
     "auto-player": "node src/auto-player.js",
-    "window-player": "node src/window-player.js"
+    "window-player": "node src/window-player.js",
+    "window-player-win": "node src/window-player-win.js"
   },
   "keywords": [
     "reversi",
@@ -18,7 +19,10 @@
   "author": "",
   "license": "MIT",
   "dependencies": {
-    "active-win": "^9.0.0",
+    "robotjs": "^0.6.0",
     "screenshot-desktop": "^1.15.1"
+  },
+  "engines": {
+    "node": ">=18.0.0"
   }
 }
