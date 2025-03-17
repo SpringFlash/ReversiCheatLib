@@ -1,76 +1,17 @@
-import { spawn } from "child_process";
-import path from "path";
+const { spawn } = require("child_process");
+const path = require("path");
+const GameLogic = require("./gameLogic");
 
-export interface BoardState {
-  [key: number]: {
-    [key: number]: "black" | "white" | "empty";
-  };
-}
-
-export interface ScreenCoordinates {
-  x: number;
-  y: number;
-}
-
-export interface BoardRect {
-  top_left: [number, number];
-  top_right: [number, number];
-  bottom_right: [number, number];
-  bottom_left: [number, number];
-}
-
-export interface ScreenSize {
-  width: number;
-  height: number;
-}
-
-export interface Move {
-  row: number;
-  col: string;
-  score: number;
-  screen_coordinates: ScreenCoordinates;
-}
-
-export interface AnalysisResult {
-  success: boolean;
-  hasMove: boolean;
-  message?: string;
-  move?: Move;
-  board?: {
-    state: BoardState;
-    playerColor: "black" | "white";
-    rect: BoardRect;
-  };
-  screen_size: ScreenSize;
-}
-
-export class ReversiBot {
-  private readonly columnLetters: string[] = [
-    "A",
-    "B",
-    "C",
-    "D",
-    "E",
-    "F",
-    "G",
-    "H",
-  ];
-  private pythonPath: string = "python3";
-
-  constructor(pythonPath?: string) {
-    if (pythonPath) {
-      this.pythonPath = pythonPath;
-    }
+class ReversiBot {
+  constructor(pythonPath) {
+    this.columnLetters = ["A", "B", "C", "D", "E", "F", "G", "H"];
+    this.pythonPath = pythonPath || "python3";
+    this.gameLogic = new GameLogic();
   }
 
-  public async analyzeScreenshot(imagePath: string): Promise<AnalysisResult> {
+  async analyzeScreenshot(imagePath) {
     return new Promise((resolve, reject) => {
-      const pythonScript = path.join(
-        __dirname,
-        "..",
-        "src",
-        "process_image.py"
-      );
+      const pythonScript = path.join(__dirname, "process_image.py");
       const process = spawn(this.pythonPath, [pythonScript, imagePath]);
 
       let output = "";
@@ -101,7 +42,21 @@ export class ReversiBot {
     });
   }
 
-  private processAnalysisResult(pythonResult: any): AnalysisResult {
+  async analyzeScreenshotForAPI(screenshotPath) {
+    try {
+      // Получаем состояние доски и цвет игрока из скриншота
+      const result = await this.analyzeScreenshot(screenshotPath);
+      return result;
+    } catch (error) {
+      console.error("Ошибка при анализе скриншота:", error);
+      return {
+        success: false,
+        error: "Ошибка при анализе скриншота",
+      };
+    }
+  }
+
+  processAnalysisResult(pythonResult) {
     const {
       board: boardState,
       player_color: playerColor,
@@ -110,7 +65,7 @@ export class ReversiBot {
     } = pythonResult;
 
     // Находим лучший ход
-    const bestMove = this.getBestMove(boardState, playerColor);
+    const bestMove = this.gameLogic.getBestMove(boardState, playerColor);
 
     if (!bestMove) {
       return {
@@ -143,20 +98,7 @@ export class ReversiBot {
     };
   }
 
-  private getBestMove(
-    board: BoardState,
-    playerColor: "black" | "white"
-  ): { row: number; col: number; score: number } | null {
-    // Реализация логики поиска лучшего хода
-    // TODO: Перенести логику из gameLogic.js
-    return null;
-  }
-
-  private calculateScreenCoordinates(
-    boardRect: BoardRect,
-    row: number,
-    col: number
-  ): ScreenCoordinates {
+  calculateScreenCoordinates(boardRect, row, col) {
     const { top_left, top_right, bottom_left } = boardRect;
 
     return {
@@ -173,3 +115,5 @@ export class ReversiBot {
     };
   }
 }
+
+module.exports = ReversiBot; 

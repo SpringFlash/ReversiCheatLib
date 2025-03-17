@@ -1,60 +1,24 @@
 {
-  "name": "@reversi/bot-native",
+  "name": "reversi-cheat",
   "version": "1.0.0",
-  "description": "Нативная библиотека для анализа игры в реверси по скриншотам",
-  "main": "dist/client/index.js",
-  "types": "dist/client/index.d.ts",
-  "files": [
-    "dist/client",
-    "android",
-    "ios"
-  ],
+  "description": "Бот для игры в реверси с автоматическим кликом",
+  "main": "src/ReversiBot.js",
   "scripts": {
-    "build": "tsc",
-    "prepare": "npm run build",
-    "prepublishOnly": "npm test",
-    "test": "jest",
-    "test:watch": "jest --watch"
+    "autoplay": "node src/autoplay.js",
+    "auto-player": "node src/auto-player.js",
+    "window-player": "node src/window-player.js"
   },
   "keywords": [
     "reversi",
     "othello",
     "game",
-    "analysis",
     "bot",
-    "react-native",
-    "android",
-    "ios"
+    "cheat"
   ],
   "author": "",
   "license": "MIT",
-  "devDependencies": {
-    "@types/jest": "^29.5.12",
-    "@types/node": "^20.11.24",
-    "@types/react-native": "^0.72.0",
-    "jest": "^29.7.0",
-    "ts-jest": "^29.2.6",
-    "typescript": "^5.3.3"
-  },
-  "peerDependencies": {
-    "react-native": ">=0.60.0"
-  },
-  "jest": {
-    "preset": "ts-jest",
-    "testEnvironment": "node",
-    "moduleFileExtensions": [
-      "ts",
-      "tsx",
-      "js",
-      "jsx",
-      "json",
-      "node"
-    ],
-    "testRegex": "(/__tests__/.*|(\\.|/)(test|spec))\\.[jt]sx?$",
-    "coverageDirectory": "coverage",
-    "collectCoverageFrom": [
-      "src/**/*.{ts,tsx,js,jsx}",
-      "!src/**/*.d.ts"
-    ]
+  "dependencies": {
+    "active-win": "^9.0.0",
+    "screenshot-desktop": "^1.15.1"
   }
 }
