@@ -1,0 +1,6 @@
+
+E:\python\python311.zip
+E:\python\DLLs
+E:\python\Lib
+E:\python
+E:\python\Lib\site-packages
